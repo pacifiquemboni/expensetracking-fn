@@ -4,15 +4,24 @@ import ExpenseDistribution from "../components/dashboard/expense";
 import Profile from "../components/dashboard/Profile";
 import Transaction from "../components/dashboard/transaction";
 import bgImage from '../assets/bg.jpg';
-import { useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import TransactionModel from "../components/modal/Transactionmodal";
 import TransactionForm from "../components/transaction/TransactionForm";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 
 
 
 export default function DashBoard() {
+    const navigate = useNavigate();
     const [isTransaction, setTransaction] = useState(false)
+    useLayoutEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+          navigate('/'); // Redirect to login if token is not found
+        }
+      }, [navigate]);
     return (
         <div className="min-h-screen bg-gray-100" style={{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
 
@@ -41,6 +50,7 @@ export default function DashBoard() {
             {isTransaction && (
                 <TransactionModel children={<TransactionForm />} onClose={()=>setTransaction(false)}/>
             )}
+            <ToastContainer />
         </div>
     );
 }

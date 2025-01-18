@@ -1,4 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCategory } from '../../redux/slice/category';
+import { RootState, AppDispatch } from '../../redux/store';
+import { fetchSubCategory } from '../../redux/actions/subCategory';
+import { addTransaction } from '../../redux/actions/transaction';
+import {  toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function TransactionForm() {
   const [account, setAccount] = useState('');
@@ -8,21 +15,52 @@ export default function TransactionForm() {
   const [subCategory, setSubCategory] = useState('');
   const [description, setDescription] = useState('');
 
+  const dispatch: AppDispatch = useDispatch();
+  const { data: categories, loading: categoryLoading, error: categoryError } = useSelector(
+    (state: RootState) => state.category
+  ) as { data: { id: string; name: string }[], loading: boolean, error: string };
+  const { subData: subCategoryData, loading: subCategoryLoading, error: subCategoryError } = useSelector(
+    (state: RootState) => state.subCategory
+  ) as { subData: { id: string; name: string }[], loading: boolean, error: string };
+
+  const {  loading: transactionLoading, error: transactionError } = useSelector(
+    (state: RootState) => state.transactions
+  ) as { data: any; loading: boolean; error: string };
+
+  useEffect(() => {
+    dispatch(fetchCategory());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (category) {
+      dispatch(fetchSubCategory({ categoryId: category })); // Fetch subCategoryData based on selected category
+    }
+  }, [category, dispatch]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission logic here
-    console.log('Account:', account);
-    console.log('Type:', type);
-    console.log('Amount:', amount);
-    console.log('Category:', category);
-    console.log('Sub Category:', subCategory);
-    console.log('Description:', description);
+    dispatch(addTransaction({ account, type, amount: parseFloat(amount), category_id: category, sub_category_id: subCategory, description }))
+      .then(() => {
+        toast.success('Transaction added successfully!');
+        resetForm();
+      })
+      .catch(() => {
+        toast.error('There was an error adding the transaction.');
+      });
+  };
+  const resetForm = () => {
+    setAccount('');
+    setType('');
+    setAmount('');
+    setCategory('');
+    setSubCategory('');
+    setDescription('');
   };
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4 text-white">Add Transaction</h1>
-      <form onSubmit={handleSubmit} className=" p-6 rounded-lg shadow-md">
+      <form onSubmit={handleSubmit} className="p-6 rounded-lg shadow-md">
         <div className="flex flex-wrap -mx-2">
           <div className="w-full lg:w-1/2 px-2">
             <div className="mb-4">
@@ -54,8 +92,8 @@ export default function TransactionForm() {
                 required
               >
                 <option value="">Select Type</option>
-                <option value="Expense">Expense</option>
-                <option value="Income">Income</option>
+                <option value="expense">Expense</option>
+                <option value="income">Income</option>
               </select>
             </div>
             <div className="mb-4">
@@ -80,17 +118,27 @@ export default function TransactionForm() {
               <select
                 id="category"
                 value={category}
-                onChange={(e) => setCategory(e.target.value)}
+                onChange={(e) => {
+                  const selectedCategoryId = e.target.value;
+                  setCategory(selectedCategoryId);
+                  setSubCategory(''); // Reset subCategory when category changes
+                  if (selectedCategoryId) {
+                    localStorage.setItem('selectedCategoryId', selectedCategoryId);
+                    dispatch(fetchSubCategory({ categoryId: category }));
+                  }
+                }}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                 required
               >
                 <option value="">Select Category</option>
-                <option value="Food">Food</option>
-                <option value="Transport">Transport</option>
-                <option value="Utilities">Utilities</option>
-                <option value="Entertainment">Entertainment</option>
+                {Array.isArray(categories) && categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </option>
+                ))}
               </select>
             </div>
+
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="subCategory">
                 Sub Category
@@ -103,12 +151,14 @@ export default function TransactionForm() {
                 required
               >
                 <option value="">Select Sub Category</option>
-                <option value="Groceries">Groceries</option>
-                <option value="Dining Out">Dining Out</option>
-                <option value="Public Transport">Public Transport</option>
-                <option value="Fuel">Fuel</option>
+                {Array.isArray(subCategoryData) && subCategoryData.map((subCat) => (
+                  <option key={subCat.id} value={subCat.id}>
+                    {subCat.name}
+                  </option>
+                ))}
               </select>
             </div>
+
             <div className="mb-4">
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="description">
                 Description
@@ -128,11 +178,16 @@ export default function TransactionForm() {
           <button
             type="submit"
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+            disabled={categoryLoading || subCategoryLoading || transactionLoading}
           >
-            Add Transaction
+            {transactionLoading ? 'Submitting...' : 'Add Transaction'}
           </button>
         </div>
+        {categoryError && <p className="text-red-500 text-xs italic mt-4">{categoryError}</p>}
+        {subCategoryError && <p className="text-red-500 text-xs italic mt-4">{subCategoryError}</p>}
+        {transactionError && <p className="text-red-500 text-xs italic mt-4">{transactionError}</p>}
       </form>
+      <ToastContainer />
     </div>
   );
 }

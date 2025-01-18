@@ -1,20 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../../redux/actions/user';
+import { AppDispatch, RootState } from '../../redux/store';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
+import { reset } from '../../redux/slice/user';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+  const dispatch: AppDispatch = useDispatch();
+  const { loading, success, error } = useSelector((state: RootState) => state.users);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-    console.log('Email:', email);
-    console.log('Password:', password);
+    dispatch(loginUser({ email, password }));
   };
 
+  useEffect(() => {
+    if (success) {
+      toast.success('Login successful');
+      setTimeout(() => {
+        navigate('/dashboard'); // Redirect to /dashboard after a delay
+      }, 2000); // 2-second delay
+      dispatch(reset());
+    }
+    if (error) {
+      toast.error(`Login error: ${error}`);
+      dispatch(reset());
+    }
+  }, [success, error]);
+
   return (
-    <div className="flex items-center  p-2 justify-center">
-      <div className=" text-white  p-10 rounded-lg shadow-md w-full max-w-md">
-        {/* <h2 className="text-2xl font-bold mb-6 text-center">Login</h2> */}
+    <div className="flex items-center p-2 justify-center">
+      <div className="text-white p-10 rounded-lg shadow-md w-full max-w-md">
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
@@ -43,12 +64,26 @@ export default function Login() {
             />
           </div>
           <div className="flex items-center justify-between">
-            <button
-              type="submit"
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-              Login
-            </button>
+            {
+              loading ? (
+                <button
+
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  disabled={loading}
+                >
+                  Logging in...
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  disabled={loading}
+                >
+                  Login
+                </button>
+              )
+            }
+
           </div>
         </form>
       </div>

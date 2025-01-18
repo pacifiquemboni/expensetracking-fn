@@ -3,20 +3,25 @@ import { useState } from "react";
 
 import Login from "./login";
 import Signup from "./signup";
+import { useDispatch,  } from "react-redux";
+import { AppDispatch } from "../../redux/store";
+import { reset } from "../../redux/slice/user";
 
 const Auth = () => {
   // const { t } = useTranslation();
   const [isLogin, setLogin] = useState(true)
   const [isSignup, setSignup] = useState(false)
-
+  const dispatch: AppDispatch = useDispatch();
 
   const OpenLogin = (() => {
     setLogin(true)
     setSignup(false)
+    dispatch(reset());
   })
   const OpenSignup = (() => {
     setLogin(false)
     setSignup(true)
+    dispatch(reset());
   })
  
   return (
