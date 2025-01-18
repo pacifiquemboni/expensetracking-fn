@@ -16,7 +16,7 @@ export default function DashBoard() {
     return (
         <div className="min-h-screen bg-gray-100" style={{ backgroundImage: `url(${bgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}>
 
-            <div className="container mx-auto ">
+            <div className="container lg:p-5 ">
 
                 <div className="flex mx-5 lg:mx-0 justify-between items-center ">
                     <h1 className="hidden lg:block text-3xl font-bold mb-4 text-white">Dashboard</h1>
