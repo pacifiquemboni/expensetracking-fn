@@ -3,7 +3,14 @@ import { createSlice } from "@reduxjs/toolkit";
 import { loginUser, registerUser } from "../actions/user";
 
 
-const initialState = {
+interface UserState {
+    data: any[];
+    loading: boolean;
+    error: string | null;
+    success: boolean;
+}
+
+const initialState: UserState = {
     data: [],
     loading: false,
     error: null as string | null,
@@ -31,7 +38,7 @@ export const userSlice = createSlice({
                 state.loading = false;
                 state.success = true;
                 state.error = null;
-                state.data = payload;
+                state.data = payload as any[];
             })
             .addCase(registerUser.rejected, (state, { payload }) => {
                 state.loading = false;
@@ -47,7 +54,7 @@ export const userSlice = createSlice({
                 state.loading = false;
                 state.success = true;
                 state.error = null;
-                state.data = payload;
+                state.data = payload as unknown as any[];
             })
             .addCase(loginUser.rejected, (state, { payload }) => {
                 state.loading = false;

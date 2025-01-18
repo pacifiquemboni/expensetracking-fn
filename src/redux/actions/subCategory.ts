@@ -13,7 +13,7 @@ async (payload: { categoryId: string }, { rejectWithValue }) => {
         // }
   
         // Make the API call with the retrieved categoryId
-        const response = await axios.get(`${backendUrl}/category/${payload.categoryId}/subcategories`);
+        const response = await axios.get<{ subCategories: any[] }>(`${backendUrl}/category/${payload.categoryId}/subcategories`);
         console.log('Subcategories:', response.data);
         
         return response.data.subCategories;

@@ -1,7 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { addTransaction, fetchTransaction } from "../actions/transaction";
 
-const initialState = {
+interface TransactionState {
+    data: any[];
+    loading: boolean;
+    error: string | null;
+    success: boolean;
+}
+
+const initialState: TransactionState = {
     data: [],
     loading: false,
     error: null as string | null,
@@ -25,7 +32,8 @@ export const transactionSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(addTransaction.fulfilled, (state, { payload }) => {
+            .addCase(addTransaction.fulfilled, (state, action) => {
+                const payload = action.payload as any[];
                 state.loading = false;
                 state.success = true;
                 state.error = null;
@@ -40,7 +48,7 @@ export const transactionSlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchTransaction.fulfilled, (state, { payload }) => {
+            .addCase(fetchTransaction.fulfilled, (state, { payload }: { payload: any[] }) => {
                 state.loading = false;
                 state.success = true;
                 state.error = null;

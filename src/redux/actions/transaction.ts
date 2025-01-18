@@ -53,7 +53,7 @@ export const addTransaction = createAsyncThunk(
                 const user_id = decodedToken.id;
                 console.log(`Fetching transactions for user ID: ${user_id}`);
                 console.log(`Backend URL: ${backendUrl}/transaction`);
-                const response = await axios.get(`${backendUrl}/transaction/${user_id}`);
+                const response = await axios.get<{ transactions: any[] }>(`${backendUrl}/transaction/${user_id}`);
                 return response.data.transactions;
             } catch (error: any) {
                 if (error.response && error.response.data) {

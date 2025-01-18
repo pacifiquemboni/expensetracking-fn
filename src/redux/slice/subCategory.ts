@@ -1,7 +1,14 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { createSubCategory, fetchSubCategory } from "../actions/subCategory";
 
-const initialState = {
+interface SubCategoryState {
+    subData: any[];
+    loading: boolean;
+    error: string | null;
+    success: boolean;
+}
+
+const initialState: SubCategoryState = {
     subData: [],
     loading: false,
     error: null as string | null,
@@ -25,7 +32,7 @@ export const subCategorySlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchSubCategory.fulfilled, (state, { payload }) => {
+            .addCase(fetchSubCategory.fulfilled, (state, { payload }: { payload: any[] }) => {
                 state.loading = false;
                 state.success = true;
                 state.error = null;
@@ -40,7 +47,8 @@ export const subCategorySlice = createSlice({
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(createSubCategory.fulfilled, (state, { payload }) => {
+            .addCase(createSubCategory.fulfilled, (state, action) => {
+                const payload = action.payload as any[];
                 state.loading = false;
                 state.success = true;
                 state.error = null;

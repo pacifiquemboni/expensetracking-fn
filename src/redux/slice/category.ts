@@ -29,7 +29,7 @@ export const categorySlice = createSlice({
                 state.loading = false;
                 state.success = true;
                 state.error = null;
-                state.data = payload;
+                state.data = payload as any; // Adjust the type as needed
             })
             .addCase(registerCategory.rejected, (state, { payload }) => {
                 state.loading = false;
@@ -44,7 +44,7 @@ export const categorySlice = createSlice({
                 state.loading = false;
                 state.success = true;
                 state.error = null;
-                state.data = payload.categories || [];
+                state.data = (payload as any).categories || [];
             })
             .addCase(fetchCategory.rejected, (state, { payload }) => {
                 state.loading = false;
