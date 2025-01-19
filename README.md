@@ -24,8 +24,8 @@ This is an expense tracking application that allows users to manage their budget
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/expensetracking-fn.git
-   cd expensetracking-fn
+   git clone https://github.com/pacifiquemboni/expensetracking-fn.git
+   
 
  2.  **Install dependencies**:
 
