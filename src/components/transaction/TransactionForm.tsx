@@ -4,7 +4,6 @@ import { fetchCategory } from '../../redux/slice/category';
 import { RootState, AppDispatch } from '../../redux/store';
 import { fetchSubCategory } from '../../redux/actions/subCategory';
 import { addTransaction } from '../../redux/actions/transaction';
-import {  toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function TransactionForm() {
