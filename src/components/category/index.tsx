@@ -1,15 +1,20 @@
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import SubCategoryForm from "./subcategory";
 import CategoryForm from "./category";
+import { AppDispatch } from "../../redux/store";
+import { useDispatch } from "react-redux";
+import { fetchCategory } from "../../redux/actions/category";
 
 const CategoryIndex = () => {
   // const { t } = useTranslation();
   const [isCategory, setCategory] = useState(true)
   const [isSubCategory, setSubCategory] = useState(false)
-
-
+  const dispatch: AppDispatch = useDispatch();
+ useEffect(() => {
+    dispatch(fetchCategory());
+  }, [dispatch]);
   const OpenCategory = (() => {
     setCategory(true)
     setSubCategory(false)

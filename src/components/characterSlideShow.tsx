@@ -1,13 +1,29 @@
 import { useState, useEffect } from 'react';
+import { jwtDecode } from 'jwt-decode';
 
-const sentences = [
-  "Hello Dear!",
-  "Welcome to Your Personal Expense Tracker!",
-];
+interface DecodedToken {
+  name: string;
+}
 
 const CharacterSlideshow = () => {
   const [displayedText, setDisplayedText] = useState('');
   const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
+  const [sentences, setSentences] = useState([
+    "Hello Dear!",
+    "Welcome to Your Personal Expense Tracker!",
+  ]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decodedToken: DecodedToken = jwtDecode(token);
+      const userName = decodedToken.name;
+      setSentences([
+        `Hello ${userName}!`,
+        "Welcome to Your Personal Expense Tracker!",
+      ]);
+    }
+  }, []);
 
   useEffect(() => {
     let currentIndex = 0;
@@ -24,7 +40,7 @@ const CharacterSlideshow = () => {
     }, 90); // Typing speed (adjust as needed)
 
     return () => clearInterval(typingInterval); // Clean up interval on component unmount
-  }, [currentSentenceIndex]);
+  }, [currentSentenceIndex, sentences]);
 
   return (
     <div className="text-center mt-5 overflow-hidden">

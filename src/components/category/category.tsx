@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { registerCategory } from '../../redux/slice/category';
+import { fetchCategory, registerCategory } from '../../redux/slice/category';
 import { RootState, AppDispatch } from '../../redux/store';
-import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function Category() {
@@ -15,17 +14,18 @@ export default function Category() {
     e.preventDefault();
     dispatch(registerCategory({ name, type }))
       .then(() => {
-        toast.success('Category added successfully!');
+        
         setName('');
         setType('');
+        dispatch(fetchCategory());
       })
       .catch(() => {
-        toast.error('There was an error adding the category.');
+        
       });
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <><div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4 text-white">Add Category</h1>
       <form onSubmit={handleSubmit} className="p-6 rounded-lg shadow-md">
         <div className="mb-4">
@@ -67,8 +67,10 @@ export default function Category() {
           </button>
         </div>
         {error && <p className="text-red-500 text-xs italic mt-4">{error}</p>}
-        <ToastContainer />
+        
       </form>
     </div>
+    </>
+    
   );
 }

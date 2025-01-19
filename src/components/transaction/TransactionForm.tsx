@@ -4,7 +4,7 @@ import { fetchCategory } from '../../redux/slice/category';
 import { RootState, AppDispatch } from '../../redux/store';
 import { fetchSubCategory } from '../../redux/actions/subCategory';
 import { addTransaction } from '../../redux/actions/transaction';
-import {  toast, ToastContainer } from 'react-toastify';
+import {  toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function TransactionForm() {
@@ -41,11 +41,11 @@ export default function TransactionForm() {
     e.preventDefault();
     dispatch(addTransaction({ account, type, amount: parseFloat(amount), category_id: category, sub_category_id: subCategory, description }))
       .then(() => {
-        toast.success('Transaction added successfully!');
+        
         resetForm();
       })
       .catch(() => {
-        toast.error('There was an error adding the transaction.');
+        
       });
   };
   const resetForm = () => {
@@ -187,7 +187,6 @@ export default function TransactionForm() {
         {subCategoryError && <p className="text-red-500 text-xs italic mt-4">{subCategoryError}</p>}
         {transactionError && <p className="text-red-500 text-xs italic mt-4">{transactionError}</p>}
       </form>
-      <ToastContainer />
     </div>
   );
 }

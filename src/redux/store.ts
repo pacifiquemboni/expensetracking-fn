@@ -4,13 +4,14 @@ import { userSlice } from './slice/user';
 import { categorySlice } from './slice/category';
 import { subCategorySlice } from './slice/subCategory';
 import { transactionSlice } from './slice/transaction'
-
+import budgetSlice from '../redux/actions/budget'
 const store = configureStore({
   reducer: {
     users: userSlice.reducer,
     category: categorySlice.reducer,
     subCategory: subCategorySlice.reducer,
     transactions: transactionSlice.reducer,
+    budget: budgetSlice
   },
 });
 

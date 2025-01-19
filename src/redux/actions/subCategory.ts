@@ -1,5 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
+import { toast } from "react-toastify";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
 export const fetchSubCategory = createAsyncThunk(
@@ -34,13 +35,15 @@ async (payload: { categoryId: string }, { rejectWithValue }) => {
         // Make the API call with the payload
         const response = await axios.post(`${backendUrl}/category/subcategory`, payload);
         console.log('Subcategory created:', response.data);
-        
+        toast.success('SubCategory added successfully!');
         return response.data;
       } catch (error: any) {
         if (error.response && error.response.data) {
           console.log(error.response.data.error);
+          toast.error('There was an error adding the subcategory.');
           return rejectWithValue(error.response.data.message);
         } else {
+            toast.error('There was an error adding the subcategory.');
           return rejectWithValue(error.message);
         }
       }

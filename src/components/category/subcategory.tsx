@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchCategory } from '../../redux/slice/category';
 import { createSubCategory } from '../../redux/actions/subCategory';
 import { RootState, AppDispatch } from '../../redux/store';
-import { toast, ToastContainer } from 'react-toastify';
+import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export default function SubCategoryForm() {
@@ -21,12 +21,12 @@ console.log("category id", category);
     e.preventDefault();
     dispatch(createSubCategory({ name, category_id: category }))
       .then(() => {
-        toast.success('SubCategory added successfully!');
+        
         setName('');
         setCategory('');
       })
       .catch(() => {
-        toast.error('There was an error adding the subcategory.');
+        
       });
   };
 

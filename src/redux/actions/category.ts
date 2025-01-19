@@ -1,6 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { toast } from "react-toastify";
 const backendUrl = import.meta.env.VITE_BACKEND_URL;
 interface DecodedToken {
     id: string;
@@ -23,12 +24,12 @@ export const registerCategory = createAsyncThunk(
             console.log(`Backend URL: ${backendUrl}/transaction`);
             const response = await axios.post(`${backendUrl}/category/register/${userId}`, userData);
 
-
+            toast.success('Category added successfully!');
             return response.data;
         } catch (error: any) {
             if (error.response && error.response.data) {
                 console.log(error.response.data.message);
-
+                toast.error('There was an error adding the category.');
                 return rejectWithValue(error.response.data.message);
             } else {
                 return rejectWithValue(error.message);
